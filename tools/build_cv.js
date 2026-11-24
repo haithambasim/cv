@@ -4,7 +4,7 @@ const path = require("path");
 const QRCode = require("qrcode");
 const {
   Document, Packer, Paragraph, TextRun, Tab, AlignmentType, TabStopType, LevelFormat, BorderStyle,
-  HeadingLevel, ExternalHyperlink, Table, TableRow, TableCell, WidthType, ImageRun, VerticalAlign,
+  HeadingLevel, ExternalHyperlink, Table, TableRow, TableCell, WidthType, ImageRun, VerticalAlign, LineRuleType,
 } = require("docx");
 
 const OUT = process.argv[2] || path.join(__dirname, "out", "Haitham-Basim-CV-2026.docx");
@@ -61,7 +61,7 @@ const cv = {
       title: "Senior Full Stack Developer",
       note: "Iraqi company affiliated with Elm Company, Saudi Arabia.",
       intro:
-        "Project: a national judicial case-management platform for courts, citizens and lawyers. " +
+        "Project: MSLA, a national judicial case-management platform for courts, citizens and lawyers. " +
         "One modular backend, three web portals, an administration app and a public document-verification site.",
       tech:
         ".NET 10, ABP Framework 10, EF Core, PostgreSQL, Redis, RabbitMQ, Keycloak, React 19, TypeScript, Vite, " +
@@ -127,8 +127,8 @@ const cv = {
   projects: [
     {
       name: "Private projects",
-      place: "Al-Muraba Co., not publicly accessible",
-      dates: "2022 – 2026",
+      place: "Al-Muraba Co. and Alhadetha Co., not publicly accessible",
+      dates: "2016 – 2026",
       // each bullet: [bold lead-in, text]
       bullets: [
         ["IFDA, Iraq Food and Drug Administration system (2022 – 2026): ",
@@ -146,6 +146,7 @@ const cv = {
         ["Muraba ERP (2023): ",
           "contributed to a microservices solution on ABP (HR, documents, projects, master data, identity) with a " +
           "Vue 3 front end."],
+        ["Al-Mawarid ERP, Alhadetha Co. (2016 – 2020): ", "built C# backends and web front ends in a team."],
       ],
     },
     {
@@ -181,7 +182,7 @@ const cv = {
 
   apps: {
     intro: "Built and published under the Jamkhana developer account.",
-    printHint: "Scan a code, or click the label under it, to open the store page.", // .docx / PDF only
+    printHint: "Each code and its label open the store page.", // .docx / PDF only; short, so the intro stays one line
     perRow: 4,
     list: [
       ["Jamkhana", "Shopping marketplace", "com.jamkhana.app", "6736534343"],
@@ -289,7 +290,7 @@ const appGrid = (apps, perRow, qrImages) => {
           altText: { name: appName + " " + label, title: appName + " on " + label, description: "QR code for " + url },
         }),
       ]),
-      centered([link(label, url, { size: 20 })], 200, false),
+      centered([link(label, url, { size: 20 })], 120, false),
     ]);
 
   const rows = [];
@@ -408,6 +409,8 @@ async function main() {
       children: [run(cv.apps.intro + " " + cv.apps.printHint)],
     }),
     appGrid(cv.apps.list, cv.apps.perRow, qrImages),
+    // Word always puts a paragraph after a closing table; a 1 pt one keeps it from pushing the grid to a new page.
+    new Paragraph({ spacing: { before: 0, after: 0, line: 20, lineRule: LineRuleType.EXACT }, children: [] }),
   ];
 
   const doc = new Document({
