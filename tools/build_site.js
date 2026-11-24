@@ -30,7 +30,7 @@ const section = (title, body) => `
     </section>`;
 
 const storeLink = (appName, label, url) =>
-  `<a href="${esc(url)}" aria-label="${esc(appName)} on ${esc(label)}">${esc(label)}</a>`;
+  `<a href="${esc(url)}" aria-label="${esc(appName)}: ${esc(label)}">${esc(label)}</a>`;
 
 const entry = (item) => {
   const name = item.company || item.name;
@@ -116,7 +116,7 @@ h3{font-size:1.125rem;line-height:1.4;font-weight:700}
 .dates{color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
 .role{font-style:italic}
 .note{color:var(--muted)}
-.links{display:flex;gap:1.25rem}
+.links{display:flex;flex-wrap:wrap;gap:.25rem 1.25rem}
 .entry ul{margin-top:.5rem;padding-left:1.15rem}
 .entry li + li{margin-top:.3rem}
 

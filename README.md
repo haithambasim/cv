@@ -24,8 +24,8 @@ cp out/Haitham-Basim-CV-2026.pdf ../Haitham-Basim-CV.pdf
 
 `soffice` is LibreOffice. `tools/out/` is not committed.
 
-The last block of the PDF is a QR code that opens the page. Its address is `SITE_URL` in `tools/build_cv.js`, so
-renaming this repository breaks every printed copy.
+The QR code in the PDF's header opens the page. Its address is `SITE_URL` in `tools/build_cv.js`, so renaming this
+repository breaks every printed copy.
 
 ## Checking the result
 

@@ -11,8 +11,9 @@ const TYPES = { ".html": "text/html; charset=utf-8", ".woff2": "font/woff2", ".p
 
 const server = http.createServer((request, response) => {
   const name = decodeURIComponent(request.url.split("?")[0]).replace(/^\/+/, "") || "index.html";
-  const file = path.join(siteDir, name);
-  if (!file.startsWith(path.resolve(siteDir)) || !fs.existsSync(file)) {
+  const root = path.resolve(siteDir); // siteDir may be relative, such as ".."
+  const file = path.join(root, name);
+  if (!file.startsWith(root) || !fs.existsSync(file)) {
     response.writeHead(404).end("not found");
     return;
   }

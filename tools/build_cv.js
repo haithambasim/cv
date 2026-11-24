@@ -150,7 +150,11 @@ const cv = {
       name: "AlWekeel",
       place: "Iraqi legal reference app",
       dates: "2026",
-      links: [["Google Play", play("com.alwekeel.app")], ["App Store", appStore("6797253894")]],
+      links: [
+        ["alwekeel.com", "https://alwekeel.com"],
+        ["Google Play", play("com.alwekeel.app")],
+        ["App Store", appStore("6797253894")],
+      ],
       bullets: [
         "Brings the texts of Iraqi laws, legal news, a lawyers directory and training courses into one app.",
         "React Native / Expo app with a .NET API and a React admin panel, deployed with Docker and Jenkins.",
@@ -296,41 +300,46 @@ const appGrid = (apps, perRow, qrImages) => {
   });
 };
 
-// ---- last block: one QR code that opens the online version of this CV
-const SITE_QR_SIZE = 84; // px at 96 dpi, about 2.2 cm
-const SITE_QR_COLUMN = 1500; // DXA, a little wider than the code
+// ---- header: name, headline and contact on the left, a QR code for the online version on the right
+const SITE_QR_SIZE = 80; // px at 96 dpi, about 2.1 cm
+const SITE_QR_COLUMN = 1300; // DXA, just wider than the code
 
-const onlineVersion = (qrImage) => {
+const header = (qrImage) => {
   const cell = (width, children) =>
     new TableCell({
       width: { size: width, type: WidthType.DXA },
       borders: NO_BORDERS,
-      margins: { top: 0, bottom: 0, left: 0, right: 120 },
-      verticalAlign: VerticalAlign.CENTER,
+      margins: { top: 0, bottom: 0, left: 0, right: 0 },
+      verticalAlign: VerticalAlign.TOP,
       children,
     });
   const line = (children, after) => new Paragraph({ spacing: { before: 0, after }, children });
   return new Table({
     width: { size: CONTENT_WIDTH, type: WidthType.DXA },
-    columnWidths: [SITE_QR_COLUMN, CONTENT_WIDTH - SITE_QR_COLUMN],
+    columnWidths: [CONTENT_WIDTH - SITE_QR_COLUMN, SITE_QR_COLUMN],
+    // No indent and no cell padding, so the name lines up with the body text in Word and in LibreOffice.
+    indent: { size: 0, type: WidthType.DXA },
+    margins: { top: 0, bottom: 0, left: 0, right: 0 },
     borders: { ...NO_BORDERS, insideHorizontal: NO_BORDER, insideVertical: NO_BORDER },
     rows: [
       new TableRow({
         cantSplit: true,
         children: [
+          cell(CONTENT_WIDTH - SITE_QR_COLUMN, [
+            line([run(cv.name, { bold: true, size: 52, color: NAVY })], 20),
+            line([run(cv.headline, { size: 24, color: GREY })], 40),
+            line([run(cv.contact.join("   ·   "))], 0),
+          ]),
           cell(SITE_QR_COLUMN, [
-            line([
+            centered([
               new ImageRun({
                 type: "png",
                 data: qrImage,
                 transformation: { width: SITE_QR_SIZE, height: SITE_QR_SIZE },
                 altText: { name: "Online CV", title: "Online version of this CV", description: "QR code for " + SITE_URL },
               }),
-            ], 0),
-          ]),
-          cell(CONTENT_WIDTH - SITE_QR_COLUMN, [
-            line([run("Scan the code, or click the link, to open the online version of this CV.")], 40),
-            line([link(SITE_URL.replace(/^https:\/\/|\/$/g, ""), SITE_URL)], 0),
+            ]),
+            centered([link("Online CV", SITE_URL, { size: 18 })], 0, false),
           ]),
         ],
       }),
@@ -349,12 +358,7 @@ async function main() {
   }
 
   const body = [
-    new Paragraph({
-      spacing: { before: 0, after: 20 },
-      children: [run(cv.name, { bold: true, size: 52, color: NAVY })],
-    }),
-    new Paragraph({ spacing: { before: 0, after: 40 }, children: [run(cv.headline, { size: 24, color: GREY })] }),
-    new Paragraph({ spacing: { before: 0, after: 0 }, children: [run(cv.contact.join("   ·   "))] }),
+    header(qrImages.get(SITE_URL)),
 
     sectionHeading("Summary"),
     new Paragraph({ spacing: { before: 0, after: 0 }, children: [run(cv.summary)] }),
@@ -386,9 +390,6 @@ async function main() {
       children: [run(cv.apps.intro + " " + cv.apps.printHint)],
     }),
     appGrid(cv.apps.list, cv.apps.perRow, qrImages),
-
-    sectionHeading("Online Version"),
-    onlineVersion(qrImages.get(SITE_URL)),
   ];
 
   const doc = new Document({
