@@ -86,18 +86,12 @@ const cv = {
       place: "Iraq",
       dates: "Feb 2022 – May 2026",
       title: "Senior Full Stack Developer",
+      note: "The systems built here are described under Projects.",
       bullets: [
         "Sole backend developer and main front-end developer of the Iraq Food and Drug Administration (IFDA) system " +
-          "from its first commit: drug registration and pricing, manufacturing sites, scientific offices, committee " +
-          "sessions and decisions, certificates, workflows and invoicing.",
-        "IFDA stack: ABP Framework, EF Core, MySQL, OpenIddict, Hangfire, Firebase notifications, S3 storage and a " +
-          "payment gateway, with React, Ant Design, Redux Toolkit, SignalR and CASL on the front end.",
-        "Designed and built Cardify (card issuing, templates and print tracking) and Taxfy (company payroll and " +
-          "salary tax), each an ABP backend with a React admin dashboard.",
-        "Contributed to the Doctor Management Information System (DMIS): ABP backend, Vue 3 front end, a public " +
-          "card-verification site and Python scripts that migrated data from the legacy system.",
-        "Contributed to Muraba ERP, a microservices solution on ABP (HR, documents, projects, master data, identity) " +
-          "with a Vue 3 front end.",
+          "from its first commit.",
+        "Designed and built Cardify and Taxfy, and contributed to the Doctor Management Information System (DMIS) " +
+          "and Muraba ERP.",
         "Built a reusable notification module on ABP Framework.",
       ],
     },
@@ -131,6 +125,29 @@ const cv = {
   ],
 
   projects: [
+    {
+      name: "Private projects",
+      place: "Al-Muraba Co., not publicly accessible",
+      dates: "2022 – 2026",
+      // each bullet: [bold lead-in, text]
+      bullets: [
+        ["IFDA, Iraq Food and Drug Administration system (2022 – 2026): ",
+          "drug registration and pricing, manufacturing sites, scientific offices, committee sessions and decisions, " +
+          "certificates, workflows and invoicing. Sole backend developer and main front-end developer. Built on ABP " +
+          "Framework, EF Core, MySQL, OpenIddict, Hangfire, Firebase notifications, S3 storage and a payment gateway, " +
+          "with React, Ant Design, Redux Toolkit, SignalR and CASL on the front end."],
+        ["Cardify (2024 – 2026): ",
+          "card issuing, templates and print tracking. Built the ABP backend and the React admin dashboard."],
+        ["Taxfy (2025): ",
+          "company payroll and salary tax. Built the ABP backend and the React admin dashboard."],
+        ["DMIS, Doctor Management Information System (2022 – 2026): ",
+          "contributed to the ABP backend, Vue 3 front end, public card-verification site and Python scripts that " +
+          "migrated the legacy data."],
+        ["Muraba ERP (2023): ",
+          "contributed to a microservices solution on ABP (HR, documents, projects, master data, identity) with a " +
+          "Vue 3 front end."],
+      ],
+    },
     {
       name: "Jamkhana",
       place: "jamkhana.com",
@@ -223,11 +240,12 @@ const entryHeader = (left, place, dates, before = 160) =>
 const subLine = (children, keepNext = true) =>
   new Paragraph({ keepNext, spacing: { before: 0, after: 40 }, children });
 
-const bullet = (text) =>
+// A bullet is plain text, or [bold lead-in, text].
+const bullet = (item) =>
   new Paragraph({
     numbering: { reference: "bullets", level: 0 },
     spacing: { before: 0, after: 40 },
-    children: [run(text)],
+    children: Array.isArray(item) ? [run(item[0], { bold: true }), run(item[1])] : [run(item)],
   });
 
 const entry = (item, index) => {

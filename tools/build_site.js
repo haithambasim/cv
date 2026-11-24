@@ -32,6 +32,10 @@ const section = (title, body) => `
 const storeLink = (appName, label, url) =>
   `<a href="${esc(url)}" aria-label="${esc(appName)}: ${esc(label)}">${esc(label)}</a>`;
 
+// A bullet is plain text, or [bold lead-in, text].
+const bullet = (item) =>
+  Array.isArray(item) ? `<li><strong>${esc(item[0])}</strong>${esc(item[1])}</li>` : `<li>${esc(item)}</li>`;
+
 const entry = (item) => {
   const name = item.company || item.name;
   const place = item.url ? `<a href="${esc(item.url)}">${esc(item.place)}</a>` : esc(item.place || "");
@@ -50,7 +54,7 @@ const entry = (item) => {
           </div>
           ${lines.join("\n          ")}
           <ul>
-            ${item.bullets.map((text) => `<li>${esc(text)}</li>`).join("\n            ")}
+            ${item.bullets.map(bullet).join("\n            ")}
           </ul>
         </article>`;
 };
